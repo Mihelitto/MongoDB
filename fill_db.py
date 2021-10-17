@@ -26,8 +26,15 @@ def main():
 
     mongo_host = env.str('MONGO_HOST', default='localhost')
     mongo_port = env.int('MONGO_PORT', default=27017)
+    mongo_password = env.str('MONGO_PASSWORD', default='')
+    mongo_login = env.str('MONGO_LOGIN', default='')
 
-    client = MongoClient(mongo_host, mongo_port)
+    auth_credentials = ''
+    if mongo_login and mongo_password:
+        auth_credentials = f'{mongo_login}:{mongo_password}@'
+    mongo_uri = f'mongodb://{auth_credentials}{mongo_host}:{mongo_port}'
+
+    client = MongoClient(mongo_uri)
     drop_db(client, 'ClientsDB')
     db = client['ClientsDB']
 
